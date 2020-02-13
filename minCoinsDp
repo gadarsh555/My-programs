@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define m 1000001
+#define pb push_back
+#define ins insert
+
+// dp[i][j] gives the minimum coins required from arr[0] to arr[i] to make the amount j .
+// arr stores the denominations of coin
+
+//eg if arr = [1,2,3,4,5] then ,
+// dp[2][11] gives the minimum coins of arr[0] = 1 ,arr[1] = 2,arr[2] = 3 ,required to make amount 11 ,i.e. 4 coins.
+
+
+int main()
+{
+ ll n,k=0;
+ cin>>n;
+ ll arr[n],l=0,r=m;
+ for(ll i=0;i<n;i++)
+ {
+    cin>>arr[i];
+    l = max(l,arr[i]);
+    r = min(r,arr[i]);
+ }
+ 
+ ll dp[n][l+r+1]={0};
+ 
+// cout<<arr[0]<<" : ";
+ 
+ for(ll i=0;i<=l+r;i++)
+ {
+     if(i%arr[0] == 0)
+     dp[0][i] = (i/arr[0]);
+     else
+     dp[0][i] = 0;
+     
+ }
+ for(ll i=1;i<n;i++)
+ {
+   
+    for(ll j=0;j<=l+r;j++)
+    {
+        dp[i][j] = dp[i-1][j];
+        if( j-arr[i] > 0)
+        {
+            if( dp[i-1][j] > 0 && dp[i][j-arr[i]] > 0 )
+             dp[i][j] = min(dp[i][j],1+dp[i][j-arr[i]]);
+             
+            else  if( dp[i-1][j] == 0 && dp[i][j-arr[i]] > 0 )
+             dp[i][j] = 1+dp[i][j-arr[i]];
+             
+              
+        }//if
+        else if( j-arr[i] == 0)
+        {
+            if( dp[i-1][j] > 0 )
+            dp[i][j] = min(dp[i][j],1+dp[i][j-arr[i]]);
+            else
+            dp[i][j] = 1+dp[i][j-arr[i]];
+            
+        }//elseif
+      
+    }//for
+ }//for
+ for(ll i=l+1;i<=l+r;i++)
+ {
+     
+     if(dp[n-1][i] == 0)
+     {
+         k = i;
+         break;
+     }
+ }
+
+
+ if( k==0 )
+ cout<<"Fake Offer!";
+ else
+ cout<<k;
+
+
+return 0;
+}
