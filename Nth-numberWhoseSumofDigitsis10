@@ -1,0 +1,46 @@
+n-th number whose sum of digits is ten
+
+The first number with sum of digits as
+10 is 19. Second number is 28.
+
+Method 3 (Constant Space and Constant Time):
+
+If we take a closer look, we can notice that all multiples of 9 are present in arithmetic progression 19, 28, 37, 46, 55, 64, 73, 82, 91, 100, 109, ….
+However, there are numbers in above series whose sum of digits is not 10, for example, 100. So instead of checking one by one, we start with 19 and increment by 9.
+
+If we see the List closely, we will find out that it is an AP where a = 19 and d = 9. But it has got some outliers too which are in multiples of 10 and starts from 100. So the sequence of outliers is something like – {100, 1000, 10000, …}
+
+Now if we want to find the nth perfect number, it should be (nth number from AP described above + 9 * number of outliers). Now let’s have a look at how to find the number of outliers. Let’s have a close look at the values returned by the Log10 function for a value n and number of outliers till n –
+
+N	LOG10	NUMBER OF OUTLIERS
+10	1	0
+100	2	1
+1000	3	2
+
+So at any point, if we subtract 1 from the log10 of the nth element and cast the result into an integer, we will get the number of outliers.
+
+
+// CPP program to find n-th number 
+// with sum of digits as 10. 
+#include <bits/stdc++.h> 
+  
+using namespace std; 
+  
+int findNth(int n) 
+{ 
+    int nthElement = 19 + (n - 1) * 9; 
+    int outliersCount = (int)log10(nthElement) - 1; 
+  
+    // find the nth perfect number 
+    nthElement += 9 * outliersCount; 
+    return nthElement; 
+} 
+  
+int main() 
+{ 
+    cout << findNth(5) << endl; 
+    return 0; 
+} 
+  
+
+
