@@ -1,0 +1,94 @@
+Count subarrays with same NUMBER OF even and odd elements
+
+OR
+
+Count subarrays with same NUMBER OF 0'S and 1'S elements
+
+An Efficient approach solves the problem in O(N) time and it is based on following ideas:
+
+Even-odd subarrays will always be of even length.
+Maintaining track of the difference between the frequency of even and odd integers.
+Hashing of this difference of frequencies is useful in finding number of even-odd subarrays.
+The basic idea is to use the difference between the frequency of odd and even numbers to obtain an optimal solution. We will maintain two integer hash arrays for the positive and negative value of the difference.
+-> Example to understand in better way :
+-> Consider difference = freq(odd) – freq(even)
+-> To calculate this difference, increment the value of ‘difference’ when there is
+an odd integer and decrement it when there is an even integer. (initially, difference = 0)
+arr[] = {3, 4, 6, 8, 1, 10}
+
+index 0 1 2 3 4 5 6
+
+array 3 4 6 8 1 10
+
+difference 0 1 0 -1 -2 -1 -2
+
+-> Observe that whenever a value ‘k’ repeats in the ‘difference’ array, there exists an
+even-odd subarray for each previous occurrence of that value i.e. subarray exists from
+index i + 1 to j where difference[i] = k and difference[j] = k.
+
+-> Value ‘0’ is repeated in ‘difference’ array at index 2 and hence subarray exists for
+(0, 2] indexes. Similarly, for repetition of values ‘-1’ (at indexes 3 and 5) and ‘-2’ (at
+indexes 4 and 6), subarray exists for (3, 5] and (4, 6] indexes.
+
+->let our difference array is :
+                                      0 1 0 -1 -2 -1 -2 -1 -2 -1 -2
+                               index: 0 1 2  3  4  5  6  7  8  9  10
+then count number of each elements ,i.e, 0,1,-1,-2
+then as -1 -2 -1 will form a subarray from 4 to 5, but at 7 there is one more -1 so this -1 will form two subarrays with -1 at 3 and -1 at 5.
+So number of subarrays by a particular difference let : -1 will be = [countof(-1)*[countof(-1) -1]]/2;
+as three -1's will form 1+2 subarrays and 4 -1's will form 1+2+3 subarrays
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define m 1000000007
+#define ins         insert
+#define pb          push_back
+#define pii         pair<ll,ll>
+#define mi          map<ll,ll>
+#define vec         vector<ll>
+#define all(a)     (a).begin(),(a).end()
+#define F           first
+#define S           second
+#define mod         1000000007
+#define rep(i,a,b)	for(ll  i=a;i<b;i++)
+#define repi(i,a,b)	for(ll  i=a;i<=b;i++)
+#define per(i,a,b)  for(ll i=a;i>=b;i--)
+#define mp          make_pair
+#define mit         map<ll,ll>::iterator
+#define sit         set<ll>::iterator
+#define pit         pair<ll,ll>::iterator
+int main()
+{ 
+     ll n,l=m,r=0,s=0;
+     cin>>n;
+     ll arr[n];
+     map<ll,ll> mp;
+     for(ll i=0;i<n;i++)
+     cin>>arr[i];
+     ll diff[n+1] = {0};
+     for(ll i=0;i<n;i++)
+     {
+         diff[i+1] = diff[i];
+         if(arr[i]%2 == 0)
+         diff[i+1]--;
+         else
+         diff[i+1]++;
+     }//for
+     for(ll i=0;i<=n;i++)
+     {
+        mp[diff[i]]++;
+        l = min(l,diff[i]);
+        r = max(r,diff[i]);
+     }//for
+     for(ll i=l;i<=r;i++)
+     {
+        s = s + (mp[i]*(mp[i]-1))/2;
+     }//for
+     cout<<s<<endl;
+
+return 0;
+}
+
+
