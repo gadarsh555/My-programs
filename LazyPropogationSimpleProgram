@@ -1,0 +1,109 @@
+Lazy Propogation : Simple Program to update a range of elements on update and gie the sum of a range of numbers on query.
+-----------------------------------------------------------------------------------------------------------------
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define m 1000000
+#define ins         insert
+#define pb          push_back
+#define pii         pair<ll,ll>
+#define mi          map<ll,ll>
+#define vec         vector<ll>
+#define all(a)     (a).begin(),(a).end()
+#define F           first
+#define S           second
+#define mod         1000000007
+#define rep(i,a,b)	for(ll  i=a;i<b;i++)
+#define repi(i,a,b)	for(ll  i=a;i<=b;i++)
+#define per(i,a,b)  for(ll i=a;i>=b;i--)
+#define mp          make_pair
+#define mit         map<ll,ll>::iterator
+#define sit         set<ll>::iterator
+#define pit         pair<ll,ll>::iterator
+
+ll tree[1000000] = {0};
+ll lazy[1000000] = {0};
+
+void update(ll node, ll start, ll end, ll l, ll r, ll val)
+{
+    if(lazy[node] != 0)
+    { 
+        // This node needs to be updated
+        tree[node] += (end - start + 1) * lazy[node];    // Update it
+        if(start != end)
+        {
+            lazy[node*2] += lazy[node];                  // Mark child as lazy
+            lazy[node*2+1] += lazy[node];                // Mark child as lazy
+        }
+        lazy[node] = 0;                                  // Reset it
+    }
+    if(start > end or start > r or end < l)              // Current segment is not within range [l, r]
+        return;
+    if(start >= l and end <= r)
+    {
+        // Segment is fully within range
+        tree[node] += (end - start + 1) * val;
+        if(start != end)
+        {
+            // Not leaf node
+            lazy[node*2] += val;
+            lazy[node*2+1] += val;
+        }
+        return;
+    }
+    ll mid = (start + end) / 2;
+    update(node*2, start, mid, l, r, val);        // Updating left child
+    update(node*2 + 1, mid + 1, end, l, r, val);   // Updating right child
+    tree[node] = tree[node*2] + tree[node*2+1];        // Updating root with max value 
+}
+
+ll query(ll node, ll start, ll end, ll l, ll r)
+{
+    if(start > end or start > r or end < l)
+        return 0;         // Out of range
+    if(lazy[node] != 0)
+    {
+        // This node needs to be updated
+        tree[node] += (end - start + 1) * lazy[node];            // Update it
+        if(start != end)
+        {
+            lazy[node*2] += lazy[node];         // Mark child as lazy
+            lazy[node*2+1] += lazy[node];    // Mark child as lazy
+        }
+        lazy[node] = 0;                 // Reset it
+    }
+    if(start >= l and end <= r)             // Current segment is totally within range [l, r]
+        return tree[node];
+    ll mid = (start + end) / 2;
+    ll p1 = query(node*2, start, mid, l, r);         // Query left child
+    ll p2 = query(node*2 + 1, mid + 1, end, l, r); // Query right child
+    return (p1 + p2);
+}
+
+int main()
+{
+	ll t;
+	cin>>t;
+	while(t--){
+		ll c,n;
+		cin>>n>>c;
+		while(c--){
+			ll k;
+			cin>>k;
+			if(k == 0){
+				ll p,q,v;
+				cin>>p>>q>>v;
+				update(1,1,n,p,q,v);
+			}//if
+			else{
+				ll p,q;
+				cin>>p>>q;
+				cout<<query(1,1,n,p,q)<<endl;
+			}//else
+		}//while
+	}
+
+return 0;
+}
