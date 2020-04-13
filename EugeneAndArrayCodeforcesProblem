@@ -1,0 +1,87 @@
+Codeforces Problem : Eugene and Array :
+------------------------------------------------------------------------------
+C. Eugene and an array
+time limit per test1.5 seconds
+memory limit per test256 megabytes
+inputstandard input
+outputstandard output
+Eugene likes working with arrays. And today he needs your help in solving one challenging task.
+
+An array 𝑐 is a subarray of an array 𝑏 if 𝑐 can be obtained from 𝑏 by deletion of several (possibly, zero or all) elements from the beginning and several (possibly, zero or all) elements from the end.
+
+Let's call a nonempty array good if for every nonempty subarray of this array, sum of the elements of this subarray is nonzero. For example, array [−1,2,−3] is good, as all arrays [−1], [−1,2], [−1,2,−3], [2], [2,−3], [−3] have nonzero sums of elements. However, array [−1,2,−1,−3] isn't good, as his subarray [−1,2,−1] has sum of elements equal to 0.
+
+Help Eugene to calculate the number of nonempty good subarrays of a given array 𝑎.
+
+Input
+The first line of the input contains a single integer 𝑛 (1≤𝑛≤2×105)  — the length of array 𝑎.
+
+The second line of the input contains 𝑛 integers 𝑎1,𝑎2,…,𝑎𝑛 (−109≤𝑎𝑖≤109)  — the elements of 𝑎.
+
+Output
+Output a single integer  — the number of good subarrays of 𝑎.
+
+Examples
+inputCopy
+3
+1 2 -3
+outputCopy
+5
+inputCopy
+3
+41 -41 41
+outputCopy
+3
+Note
+In the first sample, the following subarrays are good: [1], [1,2], [2], [2,−3], [−3]. However, the subarray [1,2,−3] isn't good, as its subarray [1,2,−3] has sum of elements equal to 0.
+
+In the second sample, three subarrays of size 1 are the only good subarrays. At the same time, the subarray [41,−41,41] isn't good, as its subarray [41,−41] has sum of elements equal to 0.
+
+
+
+solution:
+--------------------------------------------------------------------------------
+Let's solve this problem in 𝑂(𝑛2×𝑙𝑜𝑔(𝑛))for now.
+
+Note that if the subarray [𝑎𝑖,...,𝑎𝑗] is good, then the subarray [𝑎𝑖,...,𝑎𝑗−1] is also good, and if the subset [𝑎𝑖,...,𝑎𝑗] is not good, then the subarray [𝑎𝑖,...,𝑎𝑗+1] is not good either. Then for each left border 𝑎𝑖 we want to find the rightmost border 𝑎𝑗 such that [𝑎𝑖,...,𝑎𝑗] is good and add to the answer 𝑗−𝑖+1 (subarrays [𝑎𝑖,...,𝑎𝑗],[𝑎𝑖,...,𝑎𝑗−1],...,[𝑎𝑖]) [1]. Let's denote the rightmost border 𝑗 for border 𝑖 as 𝑅(𝑖).
+
+Let's calculate the prefix-sum of the array 𝑃.
+
+𝑃0=0,𝑃𝑖=𝑎1+..+𝑎𝑖,1≤𝑖≤𝑛.
+
+Note that a subset of [𝑎𝑖,...,𝑎𝑗] has a zero sum iff 𝑃𝑖−1=𝑃𝑗. Then the subset [𝑎𝑖,...,𝑎𝑗] is a good iff sum of prefixes [𝑃𝑖−1,...,𝑃𝑗] has no duplicates [2].
+
+Using [1] and [2], we can simply iterate over 𝑖 from 0 to 𝑛 and over 𝑗 from 𝑖 to 𝑛 and count the set of prefix sums [𝑃𝑖,...,𝑃𝑗]. The first moment 𝑗0 when this set contains duplicates gives us the rightmost border 𝑗0−1, and we add (𝑗0−1)−𝑖 (no +1, because it is an array of prefix sums) to answer.
+
+To improve this solution to 𝑂(𝑛×𝑙𝑜𝑔(𝑛)), we need to note that 𝑅(𝑖) is monotonous over 𝑖. Now we can iterate over 𝑖 from 0 to 𝑛 and over 𝑗 from 𝑅(𝑖−1) to 𝑛 uses a set of prefix sums from the previous iteration. Thus we have a solution 𝑂(𝑛×𝑙𝑜𝑔(𝑛)), because 𝑗 points to each element of the array exactly once.
+
+If you code in C++, it is important not to use std:: unordered_set in this task, but use std::set. One of the participants hacked the solution using std:: unordered_set, using collisions in this structure. I highly recommend you to read this blog for more info https://codeforces.com/blog/entry/62393.
+
+Final time complexity: 𝑂(𝑛×𝑙𝑜𝑔(𝑛))
+Solution C++
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+int main() {
+    int n; cin >> n;
+    vector<long long> prefix(n + 1, 0);
+    for (int i = 0; i < n; ++i) {
+        int x; cin >> x;
+        prefix[i + 1] = prefix[i] + x;
+    }
+    int begin = 0, end = 0;
+    long long ans = 0;
+    set<long long> s = {0};
+    while(begin < n) {
+        while(end < n && !s.count(prefix[end + 1])) {
+            ++end;
+            s.insert(prefix[end]);
+        }
+        ans += end - begin;
+        s.erase(prefix[begin]);
+        ++begin;
+    }
+    cout << ans << endl;
+}
