@@ -1,0 +1,47 @@
+Pillai's arithmetical function:
+------------------------------------------------------------------------------------------
+
+In number theory, the gcd-sum function also called Pillai's arithmetical function is defined for every n.
+
+p(n) = gcd(1,n) + gcd(2,n) + gcd(3,n) +.............. + gcd(n,n)
+
+or
+
+p(n) = d1*phi(n/d1) + d2*phi(n/d2) + d3*phi(n/d3) + .................... + dn*phi(n/dn)
+where d1,d2,....,dn are the divisors of the number n,
+
+function to get GCD-SUM from 1 to n:
+--------------------------------------------------------------------------
+
+void gcd_sum()
+{
+    int i,j;
+
+    //calculating the totient funtion value for every digit from 1 to n and storing in tot array
+    for(i=1;i<=n;i++)
+    {
+        tot[i] = i;
+    }
+
+    for(i=2;i<=n;i++)
+    {
+        if(tot[i] == i)
+        {
+            for(j=i;j<=n;j+=i)
+            {
+                tot[j] -= tot[j]/i;
+            }
+        }
+    }
+
+    // calculating the gcd-sum for every digit from 1 to n using pillai distributon funtion
+
+    for(i=1;i<=n;i++)
+    {
+        for(j=i;j<=n;j+=i)
+        {
+            gs[j] += i*tot[j/i];
+        }
+    }
+}
+
