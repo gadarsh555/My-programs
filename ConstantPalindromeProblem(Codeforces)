@@ -1,0 +1,60 @@
+Codeforces Problem : https://codeforces.com/contest/1343/problem/D
+
+Constant Palindrome Problem:
+-------------------------------------------------------------
+solution:
+-----------
+It is obvious that if we fix the value of 𝑥 then there are three cases for the pair of elements:
+
+We don't need to change anything in this pair;
+we can replace one element to fix this pair;
+we need to replace both elements to fix this pair.
+The first part can be calculated easily in 𝑂(𝑛+𝑘), we just need to create the array of frequencies 𝑐𝑛𝑡, where 𝑐𝑛𝑡𝑥 is the number of such pairs (𝑎𝑖,𝑎𝑛−𝑖+1) that 𝑎𝑖+𝑎𝑛−𝑖+1=𝑥.
+
+The second part is a bit tricky but still doable in 𝑂(𝑛+𝑘). For each pair, let's understand the minimum and the maximum sum we can obtain using at most one replacement. For the 𝑖-th pair, all such sums belong to the segment [𝑚𝑖𝑛(𝑎𝑖,𝑎𝑛−𝑖+1)+1;𝑚𝑎𝑥(𝑎𝑖,𝑎𝑛−𝑖+1)+𝑘]. Let's make +1 on this segment using prefix sums (make +1 in the left border, −1 in the right border plus one and then just compute prefix sums on this array). Let this array be 𝑝𝑟𝑒𝑓. Then the value 𝑝𝑟𝑒𝑓𝑥 tells the number of such pairs that we need to replace at most one element in this pair to make it sum equals 𝑥.
+
+And the last part can be calculated as 𝑛2−𝑝𝑟𝑒𝑓𝑥. So, for the sum 𝑥 the answer is (𝑝𝑟𝑒𝑓𝑥−𝑐𝑛𝑡𝑥)+(𝑛2−𝑝𝑟𝑒𝑓𝑥)⋅2. We just need to take the minimum such value among all possible sums from 2 to 2𝑘.
+
+There is another one solution that uses scanline, not depends on 𝑘 and works in 𝑂(𝑛log𝑛) but it has no cool ideas to explain it here (anyway the main idea is almost the same as in the solution above).
+
+
+Program:
+--------------------------------------------------
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define m 1000000
+#define mod         1000000007
+#define rep(i,a,b)	for(ll  i=a;i<b;i++)
+#define repi(i,a,b)	for(ll  i=a;i<=b;i++)
+#define per(i,a,b)  for(ll i=a;i>=b;i--)
+
+int main()
+{
+    ll t;
+    cin>>t;
+    while(t--){
+        ll n,k,ans=mod;
+        cin>>n>>k;
+        ll arr[n];
+        rep(i,0,n)
+        cin>>arr[i];
+        ll freq[(2*k)+2]={0};
+        for(ll i=0;i<n/2;i++)
+        freq[arr[i]+arr[n-i-1]]++;
+        ll prefix[2*k + 2]={0};
+        for(ll i=0;i<n/2;i++){
+            prefix[min(arr[i],arr[n-i-1])+1]++;
+            prefix[max(arr[i],arr[n-i-1])+k+1]--;
+        }//for
+        for(ll i=1;i<=(2*k)+1;i++){
+            prefix[i]+=prefix[i-1];
+        }//for
+         for(ll i=2;i<=(2*k);i++){
+             ans = min(ans,(prefix[i]-freq[i])+((n/2) - prefix[i])*2 );
+         }//for
+         cout<<ans<<endl;
+    }//while
+return 0;
+}
