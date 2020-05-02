@@ -1,0 +1,77 @@
+KRUNTH MORRIS STRING ALGORTIHM (KMP):
+----------------------------------------------------------------------------
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define m 1000000
+#define ins         insert
+#define pb          push_back
+#define pii         pair<ll,ll>
+#define mi          map<ll,ll>
+#define vec         vector<ll>
+#define all(a)     (a).begin(),(a).end()
+#define F           first
+#define S           second
+#define mod         1000000007
+#define rep(i,a,b)	for(ll  i=a;i<b;i++)
+#define repi(i,a,b)	for(ll  i=a;i<=b;i++)
+#define per(i,a,b)  for(ll i=a;i>=b;i--)
+#define mp          make_pair
+#define mit         map<ll,ll>::iterator
+#define sit         set<ll>::iterator
+#define pit         pair<ll,ll>::iterator
+
+void pattern(string p , ll pat[]){
+    pat[0] = 0;
+    
+    for(ll i=0,j=1;j<p.size();){
+         if(p[i] == p[j]){
+            pat[j] = i+1;
+            i++;
+            j++;        
+         }//if
+         else{
+             if(i>0)
+             i = pat[i-1];
+             else{
+                pat[j] = 0;
+                j++;
+             }//else
+          }//else
+    }//for
+}
+
+ll kmp(string t,string p,ll pat[]){
+   ll cnt = 0;
+   for(ll i=0,j=0;i<t.size();){
+        if(t[i] == p[j]){
+            i++;
+            j++;
+        }//if
+        else{
+            if(j>0)
+            j = pat[j-1];
+            else
+            i++;
+        }//else
+         if( j == p.size()){
+               cnt++;
+               j = pat[j-1];
+         }//if
+   }//for
+   return cnt;
+}//
+
+int main()
+{
+    string p,t;
+    cin>>p;
+    cin>>t;
+    ll pat[p.size()] = {0};
+    pattern(p,pat);
+    cout<<endl<<"Count : "<<kmp(t,p,pat);
+
+return 0;
+}

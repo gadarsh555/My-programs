@@ -1,0 +1,19 @@
+Note on comparisons: lexicographic comparison between strings:
+----------------------------------------------------------------------------------------------------------------------
+A string s precedes a string t in lexicographic order if
+
+s is a prefix of t, or
+if c and d are respectively the first character of s and t in which s and t differ, then c precedes d in character order.
+Note: For the characters that are alphabetical letters, the character order coincides with the alphabetical order. Digits precede letters, and uppercase letters precede lowercase ones.
+
+Example:
+
+house precedes household
+Household precedes house
+composer precedes computer
+H2O precedes HOTEL
+To verify whether a string precedes another one in lexicographic order, we use the compareTo() method. Given two strings s and t, s.compareTo(t) returns
+
+a negative integer, if s precedes t;
+0, if s is equal to t, i.e., if s.equals(t) returns true;
+a positive integer, if s follows t.

@@ -1,0 +1,91 @@
+Twitter Trends Problem (Data structures ,string,sorting,implementation):https://www.hackerearth.com/practice/algorithms/string-algorithm/string-searching/practice-problems/algorithm/twitter-trends/
+----------------------------------------------------------------------------------------------------
+
+Problem:
+----------------------------
+Twitter shows trends in order to make its users aware of the trending news. These trends are nothing but trending hashtags that the users are tweeting about. For example: If thousands of users are talking about United States by adding a hashtag #US in their tweet, then US will be a trending hashtag. Couple of example tweets with hashtag #US could be:
+
+Donald Trump becomes the 45th #US President
+Roger Federer wins #US Open for 5th time
+Given a list of N tweets, your task is to find top the five trending hashtags. Each tweet, let's call it S, will contain at least one one word with hashtag. There will be maximum of three hashtags in any tweet. All hashtags in a single tweet will be unique.
+
+Input:
+First line of the input will contain N denoting the number of tweets.
+Next N lines, each will contain a string S.
+
+Output:
+Print the top five trending hashtags. In case of tie between any two hashtags, print them in lexicographical order in a new line.
+
+Constraints:
+ where S denotes length of string S i.e. length of tweet.
+Any hashtag denoted by H  where H denotes length of any hashtag H.
+
+Note:
+
+Any tweet is composed of lowercase and uppercase English letters, digits and spaces.
+Any hashtag begins with # and the subsequent characters will only contain lowercase and uppercase English letters and digits.
+
+Solution:
+------------------------------------------------------------------------------------------------------------
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define m 1000000
+#define ins         insert
+#define pb          push_back
+#define pii         pair<ll,ll>
+#define mi          map<ll,ll>
+#define vec         vector<ll>
+#define all(a)     (a).begin(),(a).end()
+#define F           first
+#define S           second
+#define mod         1000000007
+#define rep(i,a,b)	for(ll  i=a;i<b;i++)
+#define repi(i,a,b)	for(ll  i=a;i<=b;i++)
+#define per(i,a,b)  for(ll i=a;i>=b;i--)
+#define mit         map<ll,ll>::iterator
+#define sit         set<ll>::iterator
+#define pit         pair<ll,ll>::iterator
+
+bool compare(pair<string,ll>p1,pair<string,ll>p2){
+if(p1.second==p2.second)
+return p1.first<p2.first;
+return p1.second>p2.second;
+}
+
+int main()
+{
+  ll n;
+  map<string,ll> mp;
+  cin>>n;
+  n++;
+  while(n--){
+    string s;
+    getline(cin, s);
+    rep(i,0,s.size()){
+        string t;
+        if(s[i] == '#'){
+          while(s[i] != 32 && i<s.size()){
+             t.pb(s[i]);
+             i++;
+          }//while
+          mp[t]++;
+        }//if
+    }//for
+  }//while
+  vector<pair<string,ll>> st;
+  for(auto it = mp.begin();it!= mp.end();it++){
+     st.pb(make_pair(it->first,it->second));
+  }//for
+  sort(st.begin(),st.end(),compare);
+  ll cnt=0;
+  for(auto it = st.begin();it != st.end();it++){
+      cout<<it->first<<endl;
+      cnt++;
+      if(cnt == 5)
+      break;
+  }//for
+return 0;
+}

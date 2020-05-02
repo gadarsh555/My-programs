@@ -1,0 +1,80 @@
+How to adapt Fenwick tree to answer range minimum queries:
+----------------------------------------------------------------------------------------
+
+source:https://stackoverflow.com/questions/31106459/how-to-adapt-fenwick-tree-to-answer-range-minimum-queries/34602284#34602284
+
+Yes, you can adapt Fenwick Trees (Binary Indexed Trees) to
+
+Update value at a given index in O(log n)
+Query minimum value for a range in O(log n) (amortized)
+We need 2 Fenwick trees and an additional array holding the real values for nodes.
+
+Suppose we have the following array:
+
+index 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+value 1  0  2  1  1  3  0  4  2  5  2  2  3  1  0
+We wave a magic wand and the following trees appear:
+
+Fenwick trees for problem example
+
+Note that in both trees each node represents the minimum value for all nodes within that subtree. For example, in BIT2 node 12 has value 0, which is the minimum value for nodes 12,13,14,15.
+
+Queries
+We can efficiently query the minimum value for any range by calculating the minimum of several subtree values and one additional real node value. For example, the minimum value for range [2,7] can be determined by taking the minimum value of BIT2_Node2 (representing nodes 2,3) and BIT1_Node7 (representing node 7), BIT1_Node6 (representing nodes 5,6) and REAL_4 - therefore covering all nodes in [2,7]. But how do we know which sub trees we want to look at?
+
+Query(int a, int b) {
+  int val = infinity // always holds the known min value for our range
+
+  // Start traversing the first tree, BIT1, from the beginning of range, a
+  int i = a
+  while (parentOf(i, BIT1) <= b) {
+    val = min(val, BIT2[i]) // Note: traversing BIT1, yet looking up values in BIT2
+    i = parentOf(i, BIT1)
+  }
+
+  // Start traversing the second tree, BIT2, from the end of range, b
+  i = b
+  while (parentOf(i, BIT2) >= a) {
+    val = min(val, BIT1[i]) // Note: traversing BIT2, yet looking up values in BIT1
+    i = parentOf(i, BIT2)
+  }
+
+  val = min(val, REAL[i]) // Explained below
+  return val
+}
+It can be mathematically proven that both traversals will end in the same node. That node is a part of our range, yet it is not a part of any subtrees we have looked at. Imagine a case where the (unique) smallest value of our range is in that special node. If we didn't look it up our algorithm would give incorrect results. This is why we have to do that one lookup into the real values array.
+
+To help understand the algorithm I suggest you simulate it with pen & paper, looking up data in the example trees above. For example, a query for range [4,14] would return the minimum of values BIT2_4 (rep. 4,5,6,7), BIT1_14 (rep. 13,14), BIT1_12 (rep. 9,10,11,12) and REAL_8, therefore covering all possible values [4,14].
+
+Updates
+Since a node represents the minimum value of itself and its children, changing a node will affect its parents, but not its children. Therefore, to update a tree we start from the node we are modifying and move up all the way to the fictional root node (0 or N+1 depending on which tree).
+
+Suppose we are updating some node in some tree:
+
+If new value < old value, we will always overwrite the value and move up
+If new value == old value, we can stop since there will be no more changes cascading upwards
+If new value > old value, things get interesting.
+
+If the old value still exists somewhere within that subtree, we are done
+If not, we have to find the new minimum value between real[node] and each tree[child_of_node], change tree[node] and move up
+Pseudocode for updating node with value v in a tree:
+
+while (node <= n+1) {
+  if (v > tree[node]) {
+    if (oldValue == tree[node]) {
+      v = min(v, real[node])
+      for-each child {
+        v = min(v, tree[child])
+      }
+    } else break
+  }
+  if (v == tree[node]) break
+  tree[node] = v
+  node = parentOf(node, tree)
+}
+Note that oldValue is the original value we replaced, whereas v may be reassigned multiple times as we move up the tree.
+
+Binary Indexing
+In my experiments Range Minimum Queries were about twice as fast as a Segment Tree implementation and updates were marginally faster. The main reason for this is using super efficient bitwise operations for moving between nodes. They are very well explained here. Segment Trees are really simple to code so think about is the performance advantage really worth it? The update method of my Fenwick RMQ is 40 lines and took a while to debug. If anyone wants my code I can put it on github. I also produced a brute and test generators to make sure everything works.
+
+I had help understanding this subject & implementing it from the Finnish algorithm community. Source of the image is http://ioinformatics.org/oi/pdf/v9_2015_39_44.pdf, but they credit Fenwick's 1994 paper for it.

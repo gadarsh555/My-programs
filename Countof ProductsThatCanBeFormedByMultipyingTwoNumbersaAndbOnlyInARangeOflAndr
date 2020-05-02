@@ -1,0 +1,23 @@
+Count of Products that can be formed by multipying two numbers a and b only in a range of l and r:
+-----------------------------------------------------------------------------------------------
+
+ll divisors(ll k ,ll a,ll b,ll l,ll r ){
+    if(k > r)
+    return 0;
+    if( mp[k] == 1)
+    return 0;
+    mp[k] = 1;
+
+    ll q1 = divisors(k*a,a,b,l,r);
+    ll q2 = divisors(k*b,a,b,l,r);
+    
+     if( k>=l )
+     return 1+q1+q2;
+     else
+     return q1+q2;
+}
+
+int main(){
+cout<<divisors(2*3,2,3,1,10);
+return 0;
+}
