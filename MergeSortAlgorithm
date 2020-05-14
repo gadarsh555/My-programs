@@ -1,0 +1,75 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define ins         insert
+#define pb          push_back
+#define pii         pair<ll,ll>
+#define mi          map<ll,ll>
+#define vec         vector<ll>
+#define all(a)     (a).begin(),(a).end()
+#define F           first
+#define S           second
+#define mod         1000000007
+#define rep(i,a,b)	for(ll  i=a;i<b;i++)
+#define repi(i,a,b)	for(ll  i=a;i<=b;i++)
+#define per(i,a,b)  for(ll i=a;i>=b;i--)
+#define mp          make_pair
+#define mit         map<ll,ll>::iterator
+#define sit         set<ll>::iterator
+#define pit         pair<ll,ll>::iterator
+#define rstl(it,a)     for(auto it = a.begin(); it != a.end(); it++)
+#define upb(arr,n,val)   upper_bound(arr,arr+n,val)
+#define lwb(arr,n,val)   lower_bound(arr,arr+n,val)
+
+void merge(ll a1[],ll m,ll a2[],ll n,ll arr[]){
+         ll i=0,j=0,k=0;
+         while(i<=m && j<=n){
+             if(a1[i]<=a2[j])
+             arr[k++]=a1[i++];
+             else
+             arr[k++] = a2[j++];
+    
+         }//while
+         
+         while(i<=m)
+         arr[k++]=a1[i++];
+         while(j<=n)
+         arr[k++]=a2[j++];
+}
+
+void mergesort(ll arr[],ll start,ll end){
+     
+     if(start == end || start > end)
+     return;
+     
+     ll mid = (start+end)/2;
+     ll a1[mid+1],a2[end-mid];
+     for(ll i=start;i<=mid;i++)
+     a1[i] = arr[i];
+     for(ll i=mid+1;i<=end;i++)
+     a2[i-(mid+1)] = arr[i];
+     
+      mergesort(a1,0,mid);
+      mergesort(a2,0,end-mid-1);
+      merge(a1,mid,a2,end-mid-1,arr);
+  
+}
+
+int main()
+{
+   ll t;
+   cin>>t;
+   while(t--){
+       ll n,s=0;
+       cin>>n;
+       ll arr[n];
+       rep(i,0,n)
+       cin>>arr[i];
+       mergesort(arr,0,n-1);
+       rep(i,0,n)
+       cout<<arr[i]<<" ";
+       cout<<endl;
+   }//while
+return 0;
+}
