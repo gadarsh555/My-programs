@@ -1,0 +1,39 @@
+Trapping Rain Water:
+----------------------------------------------------------------------------
+Problem : Given an array arr[] of N non-negative integers representing height of blocks at index i as Ai where the width of each block is 1. Compute how much water can be trapped in between blocks after raining.?
+
+Solution:
+------------------------------------------------------------------------
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define m 1000000
+
+int main()
+{
+   ll t;
+   cin>>t;
+   while(t--){
+       ll n,ans=0,l=0,r=0,k=0;
+       cin>>n;
+       ll arr[n];
+       rep(i,0,n)
+       cin>>arr[i];
+       ll lmax[n]={0},rmax[n]={0};
+       for(ll i=1,j=n-2;i<n;i++,j--){
+           l = max(l,arr[i-1]);
+           lmax[i] = l;
+           r = max(r,arr[j+1]);
+           rmax[j] = r;
+       }//for
+       for(ll i=1;i<n-1;i++){
+           k = min(lmax[i],rmax[i]);
+           if(k > arr[i]){
+               ans += (k-arr[i]);
+           }//if
+       }//for
+       cout<<ans<<endl;
+   }//while
+return 0;
+}
