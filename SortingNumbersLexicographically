@@ -1,0 +1,53 @@
+Largest Number formed from an Array :
+--------------------------------------------------------------------------
+Given a list of non negative integers, arrange them in such a manner that they form the largest number possible.The result is going to be very large, hence return the result in the form of a string.
+
+Example:
+Input:
+2
+5
+3 30 34 5 9
+4
+54 546 548 60
+
+Output:
+9534330
+6054854654
+
+Program:
+---------------------------------------------------------------------------
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+#define rep(i,a,b)	for(ll  i=a;i<b;i++)
+#define pb          push_back
+
+bool compare(string s1,string s2) 
+{ 
+    if(s1+s2 > s2+s1)
+    return true;
+    else
+    return false;
+}//comapre 
+
+int main()
+{
+  ll t;
+  cin>>t;
+  while(t--){
+      ll n;
+      vector<string> v;
+      cin>>n;
+      ll a;
+      rep(i,0,n){
+      cin>>a;
+      v.pb(to_string(a));
+      }//for
+      sort(v.begin(),v.end(),compare);
+      for(auto it = v.begin();it != v.end();it++)
+      cout<<*it;
+      cout<<endl;
+  }//while
+return 0;
+}

@@ -1,0 +1,57 @@
+Spirally traversing a matrix Problem :
+-------------------------------------------------------
+Given a matrix mat[][] of size M*N. Traverse and print the matrix in spiral form.
+
+Input:
+The first line of the input contains a single integer T, denoting the number of test cases. Then T test cases follow. Each testcase has 2 lines. First line contains M and N respectively separated by a space. Second line contains M*N values separated by spaces.
+
+Output:
+Elements when travelled in Spiral form, will be displayed in a single line.
+
+
+Program:
+-----------------------------------------------------------------
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define ld long double
+
+int main()
+{
+    ll t;
+    cin>>t;
+    while(t--){
+        ll m,n,xu=0,xd=0,yl=0,yr=0;
+        cin>>m>>n;
+        ll p = m,q=n;
+        ll arr[m][n];
+        rep(i,0,m)
+        rep(j,0,n)
+        cin>>arr[i][j];
+        ll layer = m/2;
+        if(n%2 != 0)
+        layer++; 
+        ll i = 0,j = 0 ; 
+	// ne = number of elements printed so far
+	// layer currently being printed
+        for(ll l = 0,ne=0;l<=layer && ne < p*q;l++){
+           for(;j<n && ne < p*q;j++,ne++)
+           cout<<arr[i][j]<<" ";
+           j--;i++;
+           for(;i<m && ne < p*q;i++,ne++)
+           cout<<arr[i][j]<<" ";
+           i--;j--;
+           for(;j>=l && ne < p*q;j--,ne++)
+           cout<<arr[i][j]<<" ";
+           j++;i--;
+           for(;i>l && ne < p*q;i--,ne++)
+           cout<<arr[i][j]<<" ";
+           i++;
+           j++;
+           n--;
+           m--;
+        }//for
+        cout<<endl;
+    }//while
+return 0;
+}
